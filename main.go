@@ -19,6 +19,7 @@ const (
 var (
 	frabURL   = flag.String("frab", "", "URL to frab conference")
 	saveDir   = flag.String("save", ".", "path to save output files to")
+	baseID    = flag.Int("id", 0, "base ID to add all object IDs to")
 	updatedAt = time.Now().Format(jsonDateFormat)
 )
 
@@ -127,7 +128,7 @@ func makeEvents(frab FrabSchedule, locationMap, eventMap map[string]int) []byte 
 				end := startTime.Add(duration)
 				event := &HackerTrackerEvent{
 					StartDate:   frabEvent.Date,
-					ID:          frabEvent.ID,
+					ID:          *baseID + frabEvent.ID,
 					Description: frabEvent.Abstract,
 					Location:    locationMap[frabEvent.Room],
 					EndDate:     end.Format(jsonDateFormat),
@@ -140,7 +141,7 @@ func makeEvents(frab FrabSchedule, locationMap, eventMap map[string]int) []byte 
 					event.Link = frabEvent.Links[0].URL
 				}
 				for _, person := range frabEvent.Persons {
-					event.Speakers = append(event.Speakers, person.ID)
+					event.Speakers = append(event.Speakers, *baseID+person.ID)
 				}
 				events = append(events, event)
 			}
@@ -163,7 +164,7 @@ func makeSpeakers(frab FrabSchedule, frabSpeakers FrabScheduleSpeakers) []byte {
 			Name:        frabSpeaker.PublicName,
 			UpdatedAt:   updatedAt,
 			Description: frabSpeaker.Abstract,
-			ID:          frabSpeaker.ID,
+			ID:          *baseID + frabSpeaker.ID,
 			Conference:  frab.Schedule.Conference.Acronym,
 		}
 		if len(frabSpeaker.Links) > 0 {
@@ -181,7 +182,7 @@ func makeSpeakers(frab FrabSchedule, frabSpeakers FrabScheduleSpeakers) []byte {
 
 func makeLocations(frab FrabSchedule) (map[string]int, []byte) {
 	locationMap := make(map[string]int)
-	roomCount := 0
+	roomCount := *baseID
 
 	// iterate over all events
 	for _, day := range frab.Schedule.Conference.Days {
@@ -214,9 +215,8 @@ func makeLocations(frab FrabSchedule) (map[string]int, []byte) {
 
 func makeEventTypes(frab FrabSchedule) (map[string]int, []byte) {
 	// find all event types
-
 	eventMap := make(map[string]int)
-	eventCount := 0
+	eventCount := *baseID
 
 	// iterate over all events
 	for _, day := range frab.Schedule.Conference.Days {

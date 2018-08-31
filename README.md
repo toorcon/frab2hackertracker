@@ -8,7 +8,7 @@ Run `make`
 
 ## Usage
 
-Pass the base URL for the frab conference schedule with the `-frab` flag, and the required JSON files are created. You can use the `-save` flag to change the output directory
+Pass the base URL for the frab conference schedule with the `-frab` flag, and the required JSON files are created. You can use the `-save` flag to change the output directory, or the `-id` flag to offset the IDs from frab to HackerTracker.
 
 Example:
 
