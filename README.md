@@ -1,6 +1,6 @@
 # Frab 2 HackerTracker
 
-This is a hacky application to take the JSON schedule and speakers from [frab](https://frab.github.io/frab/) and output JSON formated for [HackerTracker](https://hackertracker.app/)
+This is a hacky application to take the JSON schedule and speakers from [frab](https://frab.github.io/frab/) and output JSON formatted for [HackerTracker](https://hackertracker.app/)
 
 ## Building
 
