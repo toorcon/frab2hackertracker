@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 )
@@ -17,6 +18,7 @@ const (
 
 var (
 	frabURL   = flag.String("frab", "", "URL to frab conference")
+	saveDir   = flag.String("save", ".", "path to save output files to")
 	updatedAt = time.Now().Format(jsonDateFormat)
 )
 
@@ -50,13 +52,39 @@ func main() {
 
 	//fmt.Println(frab.Schedule.Conference.Title)
 
-	eventMap := MakeEventTypes(frabSchedule)
+	eventMap, eventTypesJSON := makeEventTypes(frabSchedule)
 
-	locationMap := MakeLocations(frabSchedule)
+	locationMap, locationJSON := makeLocations(frabSchedule)
 
-	MakeSpeakers(frabSchedule, frabSpeakers)
+	speakersJSON := makeSpeakers(frabSchedule, frabSpeakers)
 
-	MakeEvents(frabSchedule, locationMap, eventMap)
+	eventsJSON := makeEvents(frabSchedule, locationMap, eventMap)
+
+	// save data
+	if _, err := os.Stat(*saveDir); os.IsNotExist(err) {
+		os.Mkdir(*saveDir, os.ModePerm)
+	}
+
+	err = saveFile("event_types.json", eventTypesJSON)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = saveFile("locations.json", locationJSON)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = saveFile("speakers.json", speakersJSON)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = saveFile("events.json", eventsJSON)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func saveFile(name string, data []byte) error {
+	return ioutil.WriteFile(fmt.Sprintf("%s/%s", *saveDir, name), data, 0644)
 }
 
 func httpGet(url string) ([]byte, error) {
@@ -77,7 +105,7 @@ func httpGet(url string) ([]byte, error) {
 	return ioutil.ReadAll(res.Body)
 }
 
-func MakeEvents(frab FrabSchedule, locationMap, eventMap map[string]int) {
+func makeEvents(frab FrabSchedule, locationMap, eventMap map[string]int) []byte {
 	events := make([]*HackerTrackerEvent, 0, 20)
 
 	// iterate over all events
@@ -123,10 +151,10 @@ func MakeEvents(frab FrabSchedule, locationMap, eventMap map[string]int) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(string(json))
+	return json
 }
 
-func MakeSpeakers(frab FrabSchedule, frabSpeakers FrabScheduleSpeakers) {
+func makeSpeakers(frab FrabSchedule, frabSpeakers FrabScheduleSpeakers) []byte {
 	// iterate over speakers
 	speakers := make([]*HackerTrackerSpeaker, 0, 10)
 
@@ -148,11 +176,10 @@ func MakeSpeakers(frab FrabSchedule, frabSpeakers FrabScheduleSpeakers) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(string(json))
-
+	return json
 }
 
-func MakeLocations(frab FrabSchedule) map[string]int {
+func makeLocations(frab FrabSchedule) (map[string]int, []byte) {
 	locationMap := make(map[string]int)
 	roomCount := 0
 
@@ -182,12 +209,10 @@ func MakeLocations(frab FrabSchedule) map[string]int {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(string(json))
-
-	return locationMap
+	return locationMap, json
 }
 
-func MakeEventTypes(frab FrabSchedule) map[string]int {
+func makeEventTypes(frab FrabSchedule) (map[string]int, []byte) {
 	// find all event types
 
 	eventMap := make(map[string]int)
@@ -221,6 +246,6 @@ func MakeEventTypes(frab FrabSchedule) map[string]int {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(string(json))
-	return eventMap
+
+	return eventMap, json
 }
