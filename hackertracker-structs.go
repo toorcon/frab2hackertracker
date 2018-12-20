@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 )
 
+// HackerTrackerArticle article information for HT
 type HackerTrackerArticle struct {
 	Name       string `json:"name"`
 	ID         int    `json:"id"`
@@ -17,6 +18,7 @@ type HackerTrackerArticle struct {
 	Text       string `json:"text"`
 }
 
+// HackerTrackerEventType event information for HT
 type HackerTrackerEventType struct {
 	Name       string `json:"name"`
 	ID         int    `json:"id"`
@@ -25,6 +27,7 @@ type HackerTrackerEventType struct {
 	Color      string `json:"color"`
 }
 
+// HackerTrackerEvent event for HT
 type HackerTrackerEvent struct {
 	StartDate   string `json:"start_date"`
 	ID          int    `json:"id"`
@@ -40,6 +43,7 @@ type HackerTrackerEvent struct {
 	UpdatedAt   string `json:"updated_at"`
 }
 
+// HackerTrackerFaq FAQ for HT
 type HackerTrackerFaq struct {
 	Answer     string `json:"answer"`
 	ID         int    `json:"id"`
@@ -48,6 +52,7 @@ type HackerTrackerFaq struct {
 	Conference string `json:"conference"`
 }
 
+// HackerTrackerLocation location information for HT
 type HackerTrackerLocation struct {
 	Name       string `json:"name"`
 	ID         int    `json:"id"`
@@ -55,6 +60,7 @@ type HackerTrackerLocation struct {
 	Conference string `json:"conference"`
 }
 
+// HackerTrackerSpeaker speaker information for HT
 type HackerTrackerSpeaker struct {
 	Name        string `json:"name"`
 	UpdatedAt   string `json:"updated_at"`
@@ -66,6 +72,7 @@ type HackerTrackerSpeaker struct {
 	Link        string `json:"link"`
 }
 
+// HackerTrackerVendor vendor info for HT
 type HackerTrackerVendor struct {
 	ID          int    `json:"id"`
 	Partner     bool   `json:"partner"`
@@ -76,6 +83,8 @@ type HackerTrackerVendor struct {
 	UpdatedAt   string `json:"updated_at"`
 }
 
+// HackerTrackerMarshal marshal data into the provided name into a byte array of JSON
+// sets updated_at
 func HackerTrackerMarshal(name string, data interface{}) ([]byte, error) {
 	m := make(map[string]interface{})
 	m["updated_at"] = updatedAt

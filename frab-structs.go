@@ -4,6 +4,7 @@
 
 package main
 
+// FrabEvent event struct from Frab
 type FrabEvent struct {
 	URL              string            `json:"url"`
 	ID               int               `json:"id"`
@@ -28,21 +29,25 @@ type FrabEvent struct {
 	Attachments      []FrabAttachments `json:"attachments"`
 }
 
+// FrabPerson person struct from FrabEvent
 type FrabPerson struct {
 	ID         int    `json:"id"`
 	PublicName string `json:"public_name"`
 }
 
+// FrabLinks link struct from FrabEvent
 type FrabLinks struct {
 	URL   string `json:"url"`
 	Title string `json:"title"`
 }
 
+// FrabAttachments attachment struct from FrabEvent
 type FrabAttachments struct {
 	URL   string `json:"url"`
 	Title string `json:"title"`
 }
 
+// FrabDay day struct from Frab
 type FrabDay struct {
 	Index    int                    `json:"index"`
 	Date     string                 `json:"date"`
@@ -51,7 +56,8 @@ type FrabDay struct {
 	Rooms    map[string][]FrabEvent `json:"rooms"`
 }
 
-type FrabConfrence struct {
+// FrabConference conference struct from FrabSchedule
+type FrabConference struct {
 	Acronym          string    `json:"acronym"`
 	Title            string    `json:"title"`
 	Start            string    `json:"start"`
@@ -61,13 +67,15 @@ type FrabConfrence struct {
 	Days             []FrabDay `json:"days"`
 }
 
+// FrabSchedule struct from Frab
 type FrabSchedule struct {
 	Schedule struct {
-		BaseURL    string        `json:"base_url"`
-		Conference FrabConfrence `json:"conference"`
+		BaseURL    string         `json:"base_url"`
+		Conference FrabConference `json:"conference"`
 	} `json:"schedule"`
 }
 
+// FrabSpeaker struct from FrabScheduleSpeakers
 type FrabSpeaker struct {
 	ID             int         `json:"id"`
 	Image          string      `json:"image"`
@@ -79,6 +87,7 @@ type FrabSpeaker struct {
 	Events         []FrabEvent `json:"events"`
 }
 
+// FrabScheduleSpeakers from Frab
 type FrabScheduleSpeakers struct {
 	ScheduleSpeakers struct {
 		Speakers []FrabSpeaker `json:"speakers"`
